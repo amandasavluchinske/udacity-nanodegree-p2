@@ -1,3 +1,4 @@
+import os
 
 def find_files(suffix, path):
     """
@@ -15,21 +16,27 @@ def find_files(suffix, path):
     Returns:
        a list of paths
     """
-    return None
 
-# OS Module Exploration Code
+    suffix_ext = f'.{suffix}'
 
-## Locally save and call this file ex.py ##
+    if not os.path.exists(path):
+        return None
 
-# Code to demonstrate the use of some of the OS modules in python
+    path_list = os.listdir(path)
 
-import os
+    # Case 1: is file
 
-# Let us print the files in the directory in which you are running this script
-print (os.listdir("."))
+    files = [f"{path}/{file}" for file in path_list if file.endswith(suffix_ext)]
 
-# Let us check if this file is indeed a file!
-print (os.path.isfile("./ex.py"))
+    # Case 2: is folder
 
-# Does the file end with .py?
-print ("./ex.py".endswith(".py"))
+    folders = [folder for folder in path_list if "." not in folder]
+
+    # Traverses folder recursively in search for file
+    for folder in folders:
+        files.extend(find_files(suffix, f"{path}/{folder}"))
+
+    return files
+
+
+find_files("c", "./testdir")
